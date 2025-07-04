@@ -36,7 +36,6 @@ public class ReservationController {
      * @return Reservation
      */
     public Reservation creerReservation(Params params) {
-
         // 1) Récupération des infos provenant de la classe appelante
         String identifiantClient = params.getIdentifiantClient();
         String dateReservationStr = params.getDateReservation();
@@ -52,23 +51,12 @@ public class ReservationController {
         // 4) Extraction de la base de données des infos concernant le type de la réservation
         TypeReservation type = typeReservationDao.extraireTypeReservation(typeReservation);
 
-        // 5) Création de la réservation
-        Reservation reservation = new Reservation(dateReservation);
-        reservation.setNbPlaces(nbPlaces);
-        reservation.setClient(client);
+        // 5) Création de la réservation via le client (Creator)
+        Reservation reservation = client.creerReservation(dateReservation, nbPlaces, type);
 
-        // 6) Ajout de la réservation au client
-        client.getReservations().add(reservation);
+        // 6) Calcul du montant total délégué à la réservation (Information Expert)
+        reservation.calculerTotal();
 
-        // 7) Calcul du montant total de la réservation qui dépend:
-        //    - du nombre de places
-        //    - de la réduction qui s'applique si le client est premium ou non
-        double total = type.getMontant() * nbPlaces;
-        if (client.isPremium()) {
-            reservation.setTotal(total * (1 - type.getReductionPourcent() / 100.0));
-        } else {
-            reservation.setTotal(total);
-        }
         return reservation;
     }
 

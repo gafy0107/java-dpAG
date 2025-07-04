@@ -22,6 +22,10 @@ public class Reservation {
     @JoinColumn(name = "ID_CLIENT")
     private Client client;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_TYPE_RESERVATION")
+    private TypeReservation typeReservation;
+
     public Reservation() {
 
     }
@@ -101,5 +105,32 @@ public class Reservation {
      */
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    /**
+     * Getter pour le type de réservation
+     */
+    public TypeReservation getTypeReservation() {
+        return typeReservation;
+    }
+
+    /**
+     * Setter pour le type de réservation
+     */
+    public void setTypeReservation(TypeReservation typeReservation) {
+        this.typeReservation = typeReservation;
+    }
+
+    /**
+     * Calcule le total de la réservation selon le type et le client (Information Expert)
+     */
+    public void calculerTotal() {
+        if (typeReservation == null || client == null) return;
+        double montant = typeReservation.getMontant() * nbPlaces;
+        if (client.isPremium()) {
+            this.total = montant * (1 - typeReservation.getReductionPourcent() / 100.0);
+        } else {
+            this.total = montant;
+        }
     }
 }

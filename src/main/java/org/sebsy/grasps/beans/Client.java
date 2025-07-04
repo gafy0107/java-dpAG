@@ -8,6 +8,21 @@ import java.util.List;
 
 @Entity
 public class Client {
+    /**
+     * Crée une réservation pour ce client et l'ajoute à la liste des réservations
+     * @param date date de la réservation
+     * @param nbPlaces nombre de places
+     * @param type type de réservation
+     * @return la réservation créée
+     */
+    public Reservation creerReservation(java.time.LocalDateTime date, int nbPlaces, org.sebsy.grasps.beans.TypeReservation type) {
+        Reservation reservation = new Reservation(date);
+        reservation.setNbPlaces(nbPlaces);
+        reservation.setClient(this);
+        reservation.setTypeReservation(type);
+        this.reservations.add(reservation);
+        return reservation;
+    }
 
     @Id
     private String identifiantClient;
